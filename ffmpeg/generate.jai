@@ -62,6 +62,9 @@ generate_bindings :: () -> bool {
         // auto_detect_enum_prefixes = false;
         // strip_enum_prefixes = false;
         // alias_original_enum_names = true;
+        
+        array_add(*opts.generate_enums_from_macros_with_prefixes, "AV_CH_LAYOUT_");
+
         visitor = my_visitor;
 
         // Can't load all the libraries for some reason, just disable stripping thingz. Nevermind, this 
@@ -71,14 +74,14 @@ generate_bindings :: () -> bool {
         array_add(*libpaths, "windows");
 
         libraries := string.[
-            "avcodec-60",
-            "avdevice-60",
-            "avfilter-9",
-            "avformat-60",
-            "avutil-58",
-            "postproc-57",
-            "swresample-4",
-            "swscale-7",
+            "avcodec-61",
+            "avdevice-61",
+            "avfilter-10",
+            "avformat-61",
+            "avutil-59",
+            "postproc-58",
+            "swresample-5",
+            "swscale-8",
         ];
         for libraries array_add(*libnames, it);
 
@@ -120,13 +123,17 @@ generate_bindings :: () -> bool {
 
         array_add(*source_files, tprint("%/libavcodec/avcodec.h", INCLUDE_PATH));
         array_add(*source_files, tprint("%/libavformat/avformat.h", INCLUDE_PATH));
+        array_add(*source_files, tprint("%/libavutil/avutil.h", INCLUDE_PATH));
+        array_add(*source_files, tprint("%/libavutil/channel_layout.h", INCLUDE_PATH));
         array_add(*source_files, tprint("%/libswscale/swscale.h", INCLUDE_PATH));
+        array_add(*source_files, tprint("%/libswresample/swresample.h", INCLUDE_PATH));
 
         array_add(*system_include_paths, GENERATOR_DEFAULT_SYSTEM_INCLUDE_PATH);
 
         builder: String_Builder;
         append(*builder, HEADER);
         generate_error_codes(*builder);
+        generate_ch_layout_headers(*builder);
         header = builder_to_string(*builder);
 
         footer = FOOTER;
@@ -152,7 +159,7 @@ Pair :: struct {
 }
 
 TYPE_REPLACEMENTS_TO_MAKE :: Pair.[
-    Pair.{"__some_type", "some_cooler_type"},
+    Pair.{"ptrdiff_t", "s64"},
 ];
 
 // This one warns about being large. Probably can also get rid of others?
@@ -250,6 +257,20 @@ generate_error_codes :: (b: *String_Builder) {
         for 1..num_spaces append(b, " ");
         print_to_builder(b, " :: 0x%; // %\n", formatInt(value, base = 16, minimum_digits = 8), value);
     }
+}
+
+
+generate_ch_layout_headers :: (builder : *String_Builder) {
+    CH_LAYOUT_DEFINITIONS :: #string __END
+
+    AV_CH_FRONT_LEFT  :: (1 << AVChannel.FRONT_LEFT );
+    AV_CH_FRONT_RIGHT :: (1 << AVChannel.FRONT_RIGHT);
+    AV_CH_LAYOUT_STEREO :: (AV_CH_FRONT_LEFT | AV_CH_FRONT_RIGHT);
+
+
+    __END
+
+    append(builder, CH_LAYOUT_DEFINITIONS);
 }
 
 has_extension :: (name: string, extension: string) -> bool {

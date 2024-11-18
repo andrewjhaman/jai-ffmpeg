@@ -30,7 +30,6 @@ AT_COMPILE_TIME :: true;
 
 HEADER :: #string DONE
 
-// Hey biiiiiiiiiiiiitch.
 AV_NOPTS_VALUE :: 0x8000000000000000;
 
 DONE
@@ -266,7 +265,7 @@ generate_ch_layout_headers :: (builder : *String_Builder) {
     AV_CH_FRONT_LEFT  :: (1 << AVChannel.FRONT_LEFT );
     AV_CH_FRONT_RIGHT :: (1 << AVChannel.FRONT_RIGHT);
     AV_CH_LAYOUT_STEREO :: (AV_CH_FRONT_LEFT | AV_CH_FRONT_RIGHT);
-
+    AV_CH_LAYOUT_MONO : u64 : xx AVChannel.FRONT_CENTER;
 
     __END
 

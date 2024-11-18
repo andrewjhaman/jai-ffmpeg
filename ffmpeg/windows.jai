@@ -4,7 +4,6 @@
 // jai generate.jai
 //
 
-// Hey biiiiiiiiiiiiitch.
 AV_NOPTS_VALUE :: 0x8000000000000000;
 
 AVERROR_BSF_NOT_FOUND      :: 0xb9acbd08; // -1179861752
@@ -35,7 +34,7 @@ AVERROR_HTTP_SERVER_ERROR  :: 0xa7a7ca08; // -1482175992
     AV_CH_FRONT_LEFT  :: (1 << AVChannel.FRONT_LEFT );
     AV_CH_FRONT_RIGHT :: (1 << AVChannel.FRONT_RIGHT);
     AV_CH_LAYOUT_STEREO :: (AV_CH_FRONT_LEFT | AV_CH_FRONT_RIGHT);
-
+    AV_CH_LAYOUT_MONO : u64 : xx AVChannel.FRONT_CENTER;
 
 
 
